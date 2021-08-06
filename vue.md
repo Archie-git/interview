@@ -195,6 +195,9 @@
     转换请求数据和响应数据；
     取消请求；
     自动转换成JSON
+    
+    promise：一个对象用来传递异步操作的信息，promise的主要作用是解决回调地狱的问题，无需多次嵌套回调函数；
+    本质：分离异步数据获取和业务；
 ###20. 请说下封装vue组件的过程
     1. 建立组件的模版，先写好页面的结构，样式；
     2. 准备好组件的数据输入，
@@ -212,14 +215,17 @@
 ###23. Vue常用组件库
     Element，Mint UI， VUX；
 ###24. 什么是vue生命周期？有什么作用；
+    view实例从创建到销毁的过程，就是生命周期，从开始创建、初始化数据、编译模版、挂载DOM->渲染、更新->渲染、销毁等一系列过程，称之为Vue的生命周期；
+    
     每个Vue实例在被创建时都要经过一系列的初始化过程-例如，需要设置数据监听、编译模版、将实例挂载到DOM并在数据变化时候更新DOM等；
     同时在这个过程中也会运行一些叫做生命周期钩子的函数，这给了用户在不同阶段添加自己的代码的机会；
     （ps：生命周期钩子就是生命周期函数），例如如果要通过某些插件操作DOM节点，如想在页面渲染完成后弹出广告窗，那么我们就可以在在mounted中进行；
+
 ###25. 第一次页面加载会触发哪几个钩子；
     beforeCreate， createed, beforeMount, mounted;
 ###26. Vue生命周期
     beforeCreate: 
-        在实例初始化之后、数据观测和事件配置之前被调用；
+        在数据观测和事件配置之前被调用；
         在这一阶段，data、methods、computed以及watch中的数据都还没有初始化，
         不能在这个阶段使用data中的数据和methods中的方法；
     create：
@@ -231,17 +237,19 @@
     beforeMounted: 
         在组件被挂载之前调用；
         执行到这个钩子的时候，在内存中已经编译好了模版了，但是还没有挂载到页面中，此时，页面还是旧的；
+        （编译模版：利用data中的数据和模版生成html文档，注意此时html还未挂载到页面上）
     mounted: 
-        在组件被挂载之后被调用；
+        在组件被挂载之后被调用（el被新创建的vm.$el替换）；
         在这一阶段，真实的DOM挂载完成，数据完成双向绑定，可以访问DOM节点，
         如果我们想要通过副作用操作页面中的DOM节点，最早可以在这个阶段进行；
+        （这一阶段将会利用上面编译好的html内容替换el属性指向的DOM对象，渲染到页面上）
     beforeUpdate: 
         当数据更新时调用；
         发生在虚拟DOM重新渲染和打补丁（patch）之前，也就是说，当执行这个钩子时，
         页面显示的数据还是旧的，而data中的数据是更新后的，页面还没有和最新的数据保持同步；
         可以在这个钩子中进一步更改状态，这不会触发附加的重渲染过程
     updated: 
-        数据更新完成后调用；
+        由于数据更新导致虚拟DOM重新渲染完成后调用；
         页面显示的数据和data中的数据已经保持同步了，都是最新的；
         这一期间应当避免再次更新数据，因为这样可能导致无限循环的更新；
     beforeDestory:
@@ -281,14 +289,18 @@
     2. history模式: window.history对象
 ###34. vue-router实现路由懒加载
 ###35. vuex是什么？哪种功能场景使用它
-    vuex是一个vue的状态管理库，用于管理全局状态；
+    vuex是一个专门为vue.js应用程序开发的的状态管理库，可以帮助我们共享状态，也就是管理全局变量；
+    vuex使用一个store对象来管理应用的状态，一个store包括：state，getter，action，mutation四个属性；
+    另外，当store对象过于庞大时，可以根据具体的业务需求分为多个module
+    
+    具体工作流程为：在组件中触发action，action则会提交mutation，然后mutation对state进行修改，最后组件再根据state， getter渲染页面；
 ###36. vuex有哪几种属性
     有5种，分别是state, getter, mutation, action, module
-    state: 基本数据（数据源存放地）
-    getter: 从基本数据中派生出来的数据
-    mutation: 提交更改数据的方法，同步
-    action: 异步下更改数据的方法，调用mutations
-    module: 模块化vuex
+    state: 用于存放数据源；
+    getter: 从数据源中派生出来的数据
+    mutation: mutation是vuex中改变state的唯一途径，并且只能同步操作；
+    action: 一些对state的异步操作可以放在action中，并在action中通过提交mutations来更新state；
+    module: 当store对象过于庞大时，可以根据具体的业务需求分为多个module；
 ###37. MVC和MVVM的区别
 ###38. MVC和MVVM的区别
     1. MVC全名model-View-Controller(模型-视图-控制器)，一种软件设计典范；
@@ -305,6 +317,14 @@
         整体来看，MVVM比MVC精简了许多，不仅简化了业务与界面的依赖，还解决了数据频繁更新的问题，不用再用选择器来操作DOM元素；
         因为在MVVM中，View不知道Model的存在，Model和ViewModel也察觉不到View，这种低耦合模式提高了代码的可重用性；
         注意：Vue并没有完全遵循MVVM的思想；
+        
+    简单理解：
+        传统的MVC：
+            数据只能由View => Controller => Model => View这样循环；
+            例如：用户键盘输入后，视图层View发生改变，但是数据层Model无法立即响应，必须要在Controlle设置监听器，告知Model执行相关操作；
+        MVVM：
+            数据流动类似于：View <=> ViewModel <=> Model
+            数据View的变动，可以直接反应在ViewModel中，然后ViewModel将数据自动同步到Model    
 ###39. 为什么官方要说Vue没有完全遵循MVVM思想
     严格的MVVM要求View不能和Model直接通信，而Vue则提供了$refs这个属性，让Model可以直接操作View，这违背了MVVM的思想；
 
@@ -393,8 +413,8 @@
     主要包括以下几个模块：
         State：定义了应用状态的数据结构，可以在这里设置默默人的初始化状态；
         Getter：允许组件从Store中获取数据，mapGetters辅助函数的作用仅仅是将store中的getter映射到局部计算属性；
-        Mutation：是唯一更改store的方法，必须是同步函数；
-        Action：用于提交mutation，而不是直接变更状态，可以包含任意异步请求；
+        Mutation：是唯一更改store的方法，必须是同步函数，store.commit；
+        Action：用于提交mutation，而不是直接变更状态，可以包含任意异步请求, store.dispath；
         Module：允许将单一的Store拆分更多个store且保存在单一的状态树中；
 ###52. Vuex页面刷新数据丢失怎么解决
     需要做vuex数据持久化，一般使用本地存储的方案来保存数据（cookie，localStorage，sessionStorage，indexDB等）
@@ -518,9 +538,11 @@
         比如，当用户填写表单时，View的状态会随着用户的输入而发生改变，而如果此时可以自动更新Model的状态，那就相当于我们把Model和View进行了双向绑定；
     2. 双向绑定的原理是什么
        Vue是实现了MVVM架构思想的JS框架，而MVVM由三个部分构成：
-            数据层（Model）：应用的数据及业务逻辑；
-            视图层（View）：应用的数据及业务逻辑；
+            数据层（Model）：代表数据模型，可以在Model中定义数据修改和操作的业务逻辑；
+            视图层（View）：负责将数据模型转化成UI展现出来；
             业务逻辑层（ViewModel）：框架封装的核心，他负责将数据和视图关联起来；
+                用于监听数据模型的改变同时控制视图的行为、处理用户交互；
+                简单理解就是一个同步Model和View的对象；
        
        这里业务逻辑层的核心功能便是数据双向绑定，ViewModel的职责是：
             数据变化后更新视图；
@@ -529,6 +551,9 @@
        ViewModel由两个主要部分组成：
             监听器：对所有数据的属性进行监听
             解析器：对每个元素节点的指令进行扫描跟解析，根据指令模版替换数据，以及绑定相应的更新函数；     
+    
+       ViewModel通过数据双向绑定把View层和Model层连接了起来，而View和Model之间的同步工作完全是自动的，无需人为干涉；
+       因此开发者只需要关注业务逻辑，不需要手动哦操作DOM，不需要关注数据状态的同步问题，复杂的数据状态维护由MVVM来统一管理；
     
     3. 如何实现双向绑定
         在Vue中，双向绑定的流程是：
@@ -544,22 +569,123 @@
             初始化视图时读取某个 key，例如 name1，创建⼀个 watcher1
             由于触发 name1 的 getter 方法，便将 watcher1 添加到 name1 对应的 Dep 中
             当 name1 更新，setter 触发时，便可通过对应 Dep 通知其管理所有 Watcher 更新
+### 78. vue的路由拦截器的作用
+    例如：权限设置，当用户没有登录权限的时候就会跳转到登录页面，用到的字段requireAuth:true
 
+### 79. vue生命周期总共有几个阶段
+    8个：创建前/后、载入前/后、更新前/后、销毁前/后；
+    
+### 80. vuex路由钩子函数
+    首页可以控制导航跳转，beforeEach， afterEach等，一般用于页面title的修改，一些需要登录才能调整页面的重定向功能；
+    beforeEach： 主要有三个参数：to, from, next
+    to: route即将进入的目标路由对象
+    from：route当前导航正要离开的路由
+    next：function一定要调用该方法resolve这个钩子，执行效果依赖next方法的调用参数，可以控制网页的跳转；
+### 81. vue如何自定义一个过滤器；
+### 82. 什么是Vue的计算属性
+    在模版中放入太多的逻辑会让模版过重并且难以维护，在需要对数据进行复杂处理的时候，且可能需要多次使用的情况下；可以采取计算属性的方式：
+    好处：
+        1. 使得数据处理逻辑更加清晰
+        2. 依赖于数据，数据更新，处理结果自动更新
+        3. 计算属性内部this指向vm实例
+        4. 相比于methods，不管依赖的数据变不变，methods都会重新计算，
+            但是依赖数据不变的时候，computed将会直接从缓存中获取，不会重新计算；
+### 83. 聊聊你对Vue.js的模版编译的理解
+    简而言之，就是先转化为AST树，再得到渲染函数返回VNODE（Vue的虚拟DOM节点）
+    
+    详细步骤：
+        首先，通过编译器将模版编译成AST树（抽象语法树即源代码的抽象语法结构的树状表现形式），
+        编译是createCompiler的返回值，createComopiler是用以创建编译器的，负责合并选项；
+        
+        然后，AST会经过（将AST语法树转化成渲染功能字符串的过程）得到渲染函数，渲染的返回值是VNode，
+        VNode是Vue的虚拟DOM节点，里面有（标签名，子节点，文本等）；  
+        
+### 84. vue与react的区别
+    相同点：
+        1. 都鼓励组件化；
+        2. 都有props的概念，都有自己的构建工具；
+        3. React与Vue只有框架的骨架，其他的功能模块如路由、状态管理等是框架分离的组件；
+    不同点：
+        1. React是单向数据流，而Vue是数据双向绑定；
+        2. React使用JSX，而Vue使用HTML模版；
+        3. React的状态保存在state中，使用setState更新，而Vue中的数据保存在data属性中，可以直接操作；
+### 85. 如何给vue自定义组件添加点击事件
+    需要在@click后面添加.native，官方对于native的解释为：监听组件根元素的原生事件        
+### 86. 绑定class的数组用法
+    1. 对象方法： v-bind:class="{'class1': isShow, 'class2': isShow2}"；
+    2. 数组方法： v-bind:class="[class1, class2]"；
+    3. 行内样式： v-bind:style="{color: color, fontSize: fontSize + 'px'}"
+### 87. computed 与 watch 的区别
+    计算属性是自动监听依赖值的变化，从而动态返回内容，而监听是一个过程，在监听的值发生变化时，可以触发一个回调，在回调中处理业务逻辑；
+    两者最大的区别来源于用法：
+        1. 只要是需要返回动态值，那么就使用计算属性；
+        2. 如果是需要在值发生改变之后执行业务逻辑，那么就使用watch；
+    
+    相关拓展：
+    1. computed是一个对象时，它有哪些选项？
+        有get和set两个选项
+    
+    2. computed 和 methods 有什么区别？
+        methods是一个方法，它可以接受参数，而computed不能，computed是可以缓存的，methods不能；
+    
+    3. computed 是否可以依赖其他组件的数据
+        computed可以依赖于其他computed，甚至是其他组件的data；
+        
+    4. watch是一个对象时，它有哪些选项
+        watch配置，handler，deep是否深度，immeditate是否立即执行
+        
+    总结：当有一些数据需要随着另外一些数据变化时，建议使用computed；
+        当有一个通用的响应数据变化的时候，要执行一些业务逻辑或者异步操作的时候，建议使用watcher；
 
+### 89. 组件间的通信
+    1. 父子：props/event, $parent/$children, ref, provide/inject；
+    2. 兄弟：bus, vuex
+    3. 跨级：bus, vuex, provider/inject
 
+### 90. vue的原理
+    Vue的模式是m-v-vm模式，通过modelView作为中间件（即vm的实例），进行数据双向绑定；
+    过程：
+        1. 通过建立虚拟DOM树document.createDocumentFragment()，方法创建虚拟DOM树；
+        2. 一旦被检测的数据改变，会通过Object.defineProperty定义的数据拦截，截取到数据的变化；
+        3. 读取截取到的数据变化，从而通过订阅-发布模式，触发Watcher（观察者），从而改变虚拟DOM的具体数据；
+        4. 最后，通过更新虚拟DOM的元素值，从而改变卒后渲染DOM树的值，完成双向绑定；
+### 91. 理解Vue中的Render渲染函数
+    vue一般使用template来创建html，然后在有的时候，我们需要使用javascript来创建html，这个时候我们就需要render函数；
+    
+    render函数返回一个createElement组件中的子组件，存储在组件实例¥slots.default中；     
 
+### 92. vue事件如何使用event对象
+    <button v-on:click="Event($event)">chick</button>
+    
+### 93. 完整的 vue-router 导航解析流程
+    1.导航被触发；
+    2.在失活的组件里调用beforeRouteLeave守卫；
+    3.调用全局beforeEach守卫；
+    4.在复用组件里调用beforeRouteUpdate守卫；
+    5.调用路由配置里的beforeEnter守卫；
+    6.解析异步路由组件；
+    7.在被激活的组件里调用beforeRouteEnter守卫；
+    8.调用全局beforeResolve守卫；
+    9.导航被确认；
+    10..调用全局的afterEach钩子；
+    11.DOM更新；
+    12.用创建好的实例调用beforeRouteEnter守卫中传给next的回调函数。
+### 94 is的用法
+### 95 vue更新数组时触发视图更新的方法
+### 96 解决非工程化项目初始化页面闪动问题
 
-
-
-
-
-
-
-
-
-
-
-
+### 以下todo
+vue-router
+1、vue-router如何响应 路由参数 的变化？
+2、完整的 vue-router 导航解析流程
+3、vue-router有哪几种导航钩子（ 导航守卫 ）？
+4、vue-router传递参数的几种方式
+5、vue-router的动态路由匹配
+6、vue-router如何定义嵌套路由？
+7、<router-link></router-link>组件及其属性
+8、vue-router实现路由懒加载（ 动态加载路由 ）
+9、vue-router路由的两种模式
+10、history路由模式配置及后台配置
 
 
 
