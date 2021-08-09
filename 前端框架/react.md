@@ -2,6 +2,8 @@
 ### https://blog.csdn.net/MichelleZhai/article/details/118423494
 ### hooks：https://blog.csdn.net/MichelleZhai/article/details/118392437
 
+### hooks: https://blog.csdn.net/kellywong/article/details/106430977
+
 ###1. 区分RealDOM和VirtualDOM
     1. RealDOM更新缓慢、VirtualDOM更新迅速；
     2. RealDOM可以直接更新HTML，Virtual无法直接更新HTML；
@@ -389,6 +391,17 @@
         HOC 自身不是 React API 的一部分，它是一种基于 React 的组合特性而形成的设计模式。
         简而言之，高阶组件是一种参数为组件、返回值为新组件的函数； 
         
+    高阶组件是什么？
+        高阶组件是重用组件逻辑的高级方法，是一种源于 React 的组件模式。 
+        HOC 是自定义组件，在它之内包含另一个组件。它们可以接受子组件提供的任何动态，
+        但不会修改或复制其输入组件中的任何行为。你可以认为 HOC 是“纯（Pure）”组件。    
+    
+    高阶组件可以做什么？
+        代码重用，逻辑和引导抽象
+        渲染劫持
+        状态抽象和控制
+        props控制
+    
     注意：
         不要在 render 方法中使用 HOC；
         务必复制静态方法；
@@ -402,11 +415,63 @@
         如果你在 render 方法里创建函数，那么使用 render prop 会抵消使用 React.PureComponent 带来的优势。
         因为浅比较 props 的时候总会得到 false，并且在这种情况下每一个 render 对于 render prop 将会生成一个新的值。
 ###53. 受控组件和非受控组件
+    1. 受控组件没有维持自己的状态，非受控组件保持自己的状态；
+    2. 受控组件数据由父组件控制，非受控组件数据由DOM控制；
+    3. 受控组件通过props获取当前值，非受控组件通过ref获取值；
+
+#React hooks
+###54. React加入Hooks的意义是什么，为什么要加入这一特性？
+    加入Hooks是为了解决一些类组件中出现的问题：
+        1. 组件之间的逻辑状态难以复用；
+        2. 大型复杂的组件难以拆分；
+        3. Class语法的使用不友好（this指针问题）；
+    有了Hooks之后，可以不必写class组件，就能使用到类组件的特性；
+    同时也可以编写分自己的hooks，在不同的组件之间复用；
+    
+###55. Hooks优点和缺点：
+    优点：
+        1. 没有破坏性改动：完全可选，无需重写任何代码便可以在一些代码中尝试hooks，100%向后兼容；
+        2. 更容易复用代码：通过自定义hooks来复用逻辑代码，可以解决类组件逻辑难以复用的问题；
+        3. 函数式编程风格：函数式组件，状态保存在运行环境，每个功能都保存在函数中，整体风格更加清爽、优雅；
+        4. 代码量少，复用性高，可读性强；
+        5. 更加容器拆分； 
+    缺点：
+        1. 状态不同步（闭包带来的坑）：函数的运行是独立的，每个函数都有一份独立的闭包作用域，当我们处理复杂逻辑时，经常会遇到"引用不是最新的"的问题；
+###56. 为什么不能在循环、条件或者嵌套函数中调用hooks
+    不要在循环，条件或嵌套函数中调用Hook，必须始终在React函数的顶层使用Hook。
+    这是因为React需要利用调用顺序来正确更新相应的状态，以及调用相应的钩子函数。
+    一旦在循环或条件分支语句中调用Hook，就容易导致调用顺序的不一致性，从而产生难以预料到的后果。
+    
+    hooks在初始化时候是以链表形式存储的，后续更新都是按照这个链表顺序执行的
+###57. 如何解决hooks闭包的问题；
+    问题：每次 render 都有一份新的状态，数据卡在闭包里，捕获了每次 render 后的 state，也就导致了输出原来的 state；
+    解决：可以通过 useRef 来保存 state。前文讲过 ref 在组件中只存在一份，无论何时使用它的引用都不会产生变化，因此可以来解决闭包引发的问题。
+###58. 常用的hooks有哪些
+    
+###59. useEffect为什么有时候会出现无限重复请求的问题；
+    可能1：在Effect中做数据请求时未设置依赖参数，同时在Effect更新了状态；
+    可能2：所设置的effect总是在改变；
+    
+    解决：使用useCallback()或者useMemo()包裹useEffect；
+###60. React Hook Api 原理
+###61. useEffect如何模拟生命周期
+    1. componentDidMount：第二个参数传入空数组；
+    2. componentDidMount 和 componentDidUpdate: 不传入第二个参数；
+    3. componentWillUnmount: useEffect函数体中返回一个函数；
+    
+###62. Hooks模拟的生命周期函数和真实的生命周期函数有什么区别
+    1. 模拟的componentWillUnmount和真实的componentWillUnmount有本质区别：模拟的清理函数在每次调用useEffect前都会执行；并不是组件卸载时候才执行；
+    2. useEffect在副作用结束之后，会延迟一段时间执行，并非同步执行，和compontDidMount有本质区别。遇到dom操作，最好使用useLayoutEffect。
+###63. Hooks相比HOC和render props有什么优点
+    HOC和render props都是一种开发模式，将复用逻辑提升到父组件，容易嵌套过多，过度包装；
+    hooks是react的api模式，将复用逻辑提取到顶层，而不是强行提升到父组件，这样就可以避免HOCheRender Props中出现的嵌套地狱；
+###64. 函数式组件和类组件的区别
+    对于类组件来说：
+        首先state是不可变的，setState后生成一个全新的引用；
+        但是类组件每次都会通过this.state来读取状态，所以每次代码执行都会拿到最新的state；
+    对于函数式组件来说：
     
     
-
-
-
 
 
 
