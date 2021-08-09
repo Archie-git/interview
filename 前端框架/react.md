@@ -3,6 +3,7 @@
 ### hooks：https://blog.csdn.net/MichelleZhai/article/details/118392437
 
 ### hooks: https://blog.csdn.net/kellywong/article/details/106430977
+### https://www.php.cn/js-tutorial-457313.html
 
 ###1. 区分RealDOM和VirtualDOM
     1. RealDOM更新缓慢、VirtualDOM更新迅速；
@@ -122,6 +123,9 @@
 ###32 React中Key的重要性
     key用于识别唯一的VirtualDOM元素以及驱动UI的相应数据，它们通过回收DOM中当前所有的元素来帮助React优化渲染。
     这些key必须是唯一的数字或者字符串，React只是重新排序元素而不是重新渲染它们，这样可以提高应用程序的性能；
+
+    key是React中用于追踪哪些列表中元素被修改、删除或者被添加的辅助标识。
+    在diff算法中，key用来判断该元素节点是被移动过来的还是新创建的元素，减少不必要的元素重复渲染。
 ###33. MVC框架的主要问题是
     1. 对DOM操作的代价非常高
     2. 程序运行缓慢且效率低下
@@ -470,12 +474,42 @@
         首先state是不可变的，setState后生成一个全新的引用；
         但是类组件每次都会通过this.state来读取状态，所以每次代码执行都会拿到最新的state；
     对于函数式组件来说：
+        useState产生的数据也是不可变的，通过数组的第二个参数set一个新的值之后，原来的值在下次渲染时会形成一个新的引用；
+        但它的state没有通过this的方式获取，每次执行都会读取当时渲染闭包环境的数据，虽然最新的值跟着最新的渲染变了，但是在旧的渲染里，状态依旧是旧值；
     
-    
+    1. 原理：function组件能够捕获渲染的值，读取渲染闭包内的数据，
+        而class组件在react通过this的方式读取，this是可变的，所以总能获取到最新的props；
+    2. 保存状态：class把state属性挂载的对象保存到memoizedState属性中，
+        而Function组件是用链表来保存状态的，memoizedState属性保存的事链表的头指针；
 
+###65. useEffect 和 useLayoutEffect的区别
+    1. useEffect是render结束后，callback函数执行，但是不会阻塞浏览器的渲染；
+        但是classcomponentDidMount 和 componentDidUpdate 是同步的，在render结束后就运行；
+        useEffect在大部分情况下都会比class的方式性能更好；
+    2. useLayoutEffect使用在处理DOM的时候，当你的useEffect里面的操作需要处理DOM，
+        并且会改变页面的样式，就需要使用这个，否则可能会出现闪屏现象，
+        useLayoutEffect里面的callback函数会在DOM更新完成后立即执行，但是会在浏览器进行渲染前运行完成，阻塞了浏览器的渲染；
 
+###66. useState 和 setState 的区别
+    1. setState可以在第二个参数中传入回调，useState里面的setState则没有第二个参数；
+    2. useState通过数组第二个参数set一个新值后，新值会形成一个新的引用，捕获当前渲染闭包里的数据state；
+        setState是通过this.state读取state，每次代码执行都会拿到最新的state引用；
 
+###67. useReducer 和 redux 的区别
+    1. useReducer()提供了状态管理，其基本原理是通过用户在页面中发起action, 从而通过 reducer方法来改变state, 
+        从而实现页面和状态的通信,使用很像redux
+    2. useReducer是useState的代替方案，用于state复杂变化
+    3. useReducer是单个组件状态管理，组件之间通信还需要通过props；
+    4. redux是全局的状态管理，多组件共享数据；
+###68. 如何自定义hook
+###69. Hooks性能优化
+    useMemo缓存数据；
+    useCallback缓存函数；
+###70. 如何在高阶组件中访问组件实例
+    1、属性代理。高阶组件通过包裹的React组件来操作props，更改 props，
+    可以对传递的包裹组件的WrappedComponent的props进行控制
 
+    2、通过 refs 获取组件实例
 
 
 
