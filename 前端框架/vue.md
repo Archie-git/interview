@@ -17,75 +17,52 @@
     
     7. 运行速度更快，相比较于react而言，同样是操作虚拟dom，就性能而言，vue存在很大的优势；
     
-###2. 父组件向子组件传递数据；
+###2. 父组件向子组件传递数据：
     通过props
-###3. 子组件向父组件传递事件
-    1. 父组件中把方法作为属性传入子组件中，在子组件中调用父组件的方法；
-    2. 先在父组件中监听某个事件、然后在子组件中通过emits获取，并通过$emit('event')触发这个事件；
-    3. 在子组件中直接通过this.$parent.event调用父组件的方法；
-###4. v-show和v-if指令
+###3. 子组件调用父组件方法：
+    1. 在父组件中通过v-on指令，对子组件设置监听某个事件；然后在子组件内部通过this.$emit('eventname')触发这个事件；
+    2. 在父组件中通过v-bind把方法作为属性传入到子组件中；然后在子组件内部通过this.$props.event()调用父组件的方法；
+    3. 在子组件中直接通过this.$parent.event()调用父组件的方法；
+###4. v-show和v-if指令：
     共同点：都能够控制元素的显示与隐藏；
-    不同点：实现的原理不同，v-show的本质是通过控制css的display设置为none，来实现隐藏或显示的目的，整个过程中，DOM是一直存在的；
-          而v-if在编译过程中会被转化成三元表达式，即当条件不满足时，DOM树中不会渲染该节点，
-          使用v-if相当于动态地向DOM树中添加或者删除DOM元素，因此需要不停地销毁和创建DOM，更加消耗性能，
-    总结：如果需要频繁切换某个节点，优先使用v-show;
+    不同点：v-show的本质是通过控制元素的CSS属性display，而v-if是通过动态地向DOM树中添加或删除DOM元素，
+    总结：v-if因此需要不停地销毁和创建DOM，更加消耗性能，如果需要频繁切换某个节点，优先使用v-show；
     
     拓展补充：display: none、visibility: hidden、opacity: 0的区别
         1. 是否占据DOM位置：
-            display：none隐藏之后不会占据相当于在DOM树移除了，不会占据空间，
-            visibili：hidden和opacity：0依旧会占据空间；
+            display：none隐藏之后不会占据空间，会导致重排和重绘，
+            visibili：hidden和opacity：0依旧会占据空间，只会导致重绘；
         2. 子元素是否继承：
             display：none： 不会被继承，但是由于父元素已经不在DOM树中了，因此就算不会继承该属性，子元素也不会显示出来；
             visibility：hidden：会被继承，可以通过设置子元素visibility: visible来显示子元素；
             opacity: 0: 会被子元素继承，但是不能设置子元素opacity：0来重新显示子元素；
         3. 事件绑定： 
-            display: none： 元素已经从DOM树中移除了，因此自然是无法触发绑定的事件；
+            display: none： 元素已经不占据空间，因此无法触发绑定事件；
             visibility: hidden： 不会触发绑定的事件；
-            opacitiy：0： 元素绑定的事件是可以被触发的；
-        4. 过渡事件：
-            transition对display和visibility是无效的；
-            transition对opacity是有效的；
+            opacitiy：0： 依然会触发绑定事件；
         简要记法：
-            display：none是将元素从DOM树中移除掉了；
+            display：none不占据空间，但是DOM节点依旧保留在DOM树中；
             visibility：hidden相相当于将元素整个替换成了空白的容器，也没有事件绑定；
             opacity：0相当于将元素的颜色设置为了透明，其余事件绑定都还存在；
 ###6. 如何让css只在当前组件中起作用？
     在组件的style标签中加上scoped
-###7. <keep-alive></keep-alive>的作用是什么
+###7. <keep-alive></keep-alive>的作用是什么？
     keep-alive是Vue内置的一个组件，可以使被包含的组件保留状态，避免重复渲染；
-###8. 如何获取dom
-    通过ref='domName'，用法：this.$refs.domName
+###8. 如何获取dom？
+    通过模版引用，首先给元素设置ref属性(<div ref='domName' />)，然后通过 this.$refs.domName 获取DOM；
 ###9. Vue当中的指令和用法：
-    1. v-text: 
-        更新元素的文本内容（textContent），<span v-test="msg"></span>等价于<span>{{ msg }}</span>;
-    2. v-html: 
-        赋值给元素的innerHTML，内容将会按照普通HTML插入，不会作为Vue模版进行编译，且scoped不会应用在v-html内部；
-        注意XSS攻击；
-    3. v-show: 
-        控制元素的展示或者隐藏，原理是修改元素的css display属性；
-    4. v-if/v-else/v-else-if: 
-        控制元素的展示或者隐藏，原理是操作DOM（添加或者删除），在render函数中就是一个三元表达式；
-    7. v-for: 
-        基于源数据遍历渲染元素或模版块；
-    8. v-on: 
-        绑定事件监听器，事件类型由参数指定，并且可以指定修饰符、以及绑定多个监听器；
-    9. v-bind: 
-        动态绑定元素的属性，或者组件的prop；
-    10. v-model: 
-        在表单控件或组件上创建双向绑定；
-    11. v-slot: 
-        插槽
-    12. v-pre: 
-        跳过这个元素以其子元素的编译过程，元素的内容将会被直接渲染出来，跳过大量没有指令的节点会加快编译。；
-    13. v-cloak:
-        这个指令会保持在元素上，直到关联组件实例结束编译，一般用于防止页面加载时出现 vuejs 的变量名；
-        v-cloak指令可以解决初始化慢而导致页面闪动的一个方案，如果是在有工程化的项目里面，
-        项目的HTML结构中就只有一个空的DIV元素，其他的都是让路由去挂载不同组件来完成的，就不需要v-cloak指令的了
-    14. v-once: 
-        只会渲染元素或者组件一次；
-        在此后的重新渲染(update)过程中，元素以及它们的子元素，将会被视作静态内容并跳过，这可以优化组件更新时的性能；
-        注意：如果v-once绑定vuex全局状态，则页面刷新后元素消失；
-    15. v-is: vue 3.x中被废弃，需要使用is属性代替；
+    1. v-text: 更新元素的textContent；
+    2. v-html: 更新元素的innerHTML，内容将会按照普通HTML插入（不会作为Vue模版进行编译）；
+    3. v-show: 切换元素的CSS display属性；
+    4. v-if/v-else-if/v-else: 控制元素的展示或者隐藏，原理是动态地操作DOM（添加或者删除）；
+    7. v-for: 基于源数据多次渲染元素或模板块；
+    8. v-on: 用于绑定事件监听器（原生DOM事件和自定义事件），并且可以指定修饰符、以及绑定多个监听器；
+    9. v-bind: 动态绑定元素的属性、或者组件的prop；
+    10. v-model: 在表单控件或组件上创建双向绑定；
+    11. v-slot: 提供具名插槽或需要接收 prop 的插槽；
+    12. v-pre: 跳过这个元素以其子元素的编译过程，元素的内容将会被直接渲染出来，跳过大量没有指令的节点会加快编译；
+    13. v-cloak: 这个指令会保持在元素上，直到关联组件实例结束编译，一般用于防止页面加载时出现 vuejs 的变量名(配合css选择器)；
+    14. v-memo: 记住一个模板的子树。元素和组件上都可以使用，如果数组中的每个值都和上次渲染的时候相同，则整个该子树的更新会被跳过。
 ###10. v-for为什么要使用key
     key可以来为每一个节点做一个唯一标识，这样Diff算法就可以正确识别这个DOM，作用是为了更高效地更新虚拟DOM；
     
@@ -98,26 +75,19 @@
     1. v-bind绑定一个value属性；
     2. v-on绑定一个input事件；
 ###11. 简述computed、watchEffect和watch的使用场景：
-    computed: 
-        computed是计算属性，通过依赖于其他属性来计算值，并且computed的值具有缓存，只有当计算值变化时才会返回内容；
+    computed：
+        computed是计算属性，依赖于其他属性来计算值，并且computed的值具有缓存，只有当计算值变化时才会返回内容；
         当多条数据影响一条数据的时候使用；
-        PS: computed可以设置getter和setter
-    watchEffect：
-        响应式地监听副作用的依赖项；
-        当依赖项发生改变时，重新执行副作用；
-    watch: 
-        可以侦听特定的数据源，当数据源发生改变时，在单独的回调函数中执行副作用，
+        PS: computed可以设置getter和setter；
+    watch：
+        可以侦听特定的数据源，当数据源发生改变时，在单独的回调函数中执行副作用；
         当一条数据影响多条数据时使用；
-        
-    watch 与 watchEffect 的比较，watch 允许我们：
-        1、惰性地执行副作用；
-        2、更具体地说明应触发侦听器重新运行的状态；
-        3、访问被侦听状态的先前值和当前值。
-    watch 与 watchEffect 在手动停止，副作用无效 (将 onInvalidate 作为第三个参数传递给回调)，flush timing 和 debugging 方面有相同的行为。
+    watchEffect：
+        根据响应式状态自动应用和重新应用副作用，无需指定依赖项；
 ###12 watch和watchEffect的区别：
     watch 是需要传入侦听的数据源，而 watchEffect 是自动收集数据源作为依赖。
     watch 可以访问侦听状态变化前后的值，而 watchEffect 没有，watchEffect获取的改变后的值。
-    watch 是属性改变的时候执行，当然也可以immediate，而 watchEffect 是默认会执行一次(相当于自带 immediate)，然后属性改变也会执行。
+    watch 是属性改变的时候执行，而 watchEffect 是默认至少会执行一次。
 ###11. v-on可以监听多个事件吗
     可以，例如：<input v-on="{click: onClick, focus: onFocus}" />
 ###11. $nextTick的使用；
