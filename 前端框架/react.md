@@ -5,119 +5,96 @@
 ### hooks: https://blog.csdn.net/kellywong/article/details/106430977
 ### https://www.php.cn/js-tutorial-457313.html
 
-###1. 区分RealDOM和VirtualDOM
+#React基础
+#Redux相关
+#React Router相关
+
+#React基础
+###1. RealDOM和VirtualDOM的区别
     1. RealDOM更新缓慢、VirtualDOM更新迅速；
     2. RealDOM可以直接更新HTML，Virtual无法直接更新HTML；
     3. RealDOm中如果元素更新，则会创建新的DOM，VirtualDOM中如果元素更新，则会更新JSX；
-    4. RealDOM的DOM操作代价很高，VirtualDOM的DOM操作非常简单；
+    4. RealDOM的DOM操作代价很高，VirtualDOM的DOM操作代价较低；
     5. RealDOM消耗内存多，VirtualDOM消耗内存少；
-###2. 什么是React
-    React是Facebook在2011年开发的前端Javascript库；
-    它遵循于组件的方法，有助于构建可重用的UI组件；
-    它用于开发复杂和交互式的Web和移动UI；
-    React拥有一个很大的支持社区；
-###3. React有什么特点
-    它使用虚拟DOM，而不是真正的DOM；
-    它可以用服务端渲染；
-    它遵循单项数据流和数据绑定；
+###3. React的特点
+    高性能虚拟DOM：React通过实现虚拟DOM，并配合diff算法，最大限度地减少与真实DOM的交互，从而提升性能；
+    组件化开发：通过 React 构建组件，使得代码更加容易得到复用，能够高效率的应用在大项目的开发中；
+    数据驱动：所谓数据驱动就是指开发者不需要直接操作DOM，当数据发生了变化，DOM会跟着变化，而视图可以通过设置事件监听来更新数据；
+    单向数据流：React中的数据是单向自顶向下传递的，数据可以从父组件传递到子组件，而子组件只能通过调用父组件的方法，来通知父组件修改自身的数据；
+    JSX扩展：是一个JavaScript的语法扩展，使用JSX可以简化组件化开发的渲染逻辑，增强代码可读性；
 ###4. React的主要优点
-    高性能
-    组件化
-###5. 说一下Virtual DOM的工作原理
-    VirtualDOM是一个轻量级的Javascript对象，它最初只是real DOM的副本，
-    它是一个节点树，它将元素、它们的属性和内容作为对象及其属性。
-    React的渲染函数从React组件中创建一个节点树，然后他响应数据模型中的变化来更新该树，该变化是由用户或者系统完成的各种动作引起的。
-
-    VirtualDOM工作过程有三个简单的步骤：
-    1. 每当底层数据发生改变时，整个UI都将在VirtualDOM描述中重新渲染；
-    2. 然后计算之前DOM表示与新表示之间的差异；
-    3. 计算完成之后，将只用实际更改的内容更新real DOM
+    简洁：采用声明式和数据驱动的模式，无需手动操作DOM；
+    灵活：使用组件化开发的模式，增强了代码的可复用性；
+    高效：虚拟DOM使得页面渲染速度更快；
 ###6. 为什么浏览器无法读取JSX
-    浏览器只能处理Javascript对象，而不能读取常规Javascript对象中的JSX，所以，为了使浏览器能够
-    读取JSX，首先，需要用像Babel这样的JSX转换器将JSX文件转换成Javascript对象，然后再将其传给浏览器；
+    浏览器只能理解原始的Javascript语法，而不能读取常规Javascript对象中的JSX；
+    所以，为了使浏览器能够理解JSX，需要先用像Babel这样的JSX转换器将JSX语法转换成原始Javascript语法；
 ###7. 如何理解，在React中，一切都是组件这句话
-    组件是React应用UI的构建块，这些组件将整个UI分成小的独立并可重用的部分，每个组件彼此独立，二不会影响UI的其余部分；
-###8. 解释React中render()的目的；
-    每个React组件强制要求必须有一个render，它返回一个React元素，是原声DOM组件的表示；
-###9. 什么是props
-    Porps是React中属性的简写，它们是只读属性，必须保持不可变，
-    它们在整个应用当中总是从父组件传递到子组件，子组件永远不能将props送回父组件，
-    这有助于维护单项数据流，通常用于呈现动态生成的数据；
-###10. React中的状态是什么，它是如何使用的
-    状态是React组件的核心，是数据的来源，必须尽可能简单；
-    基本上状态是确定组件呈现和行为的对象，与props不同，它们是可变的，以便与创建动态和交互式组件；
-###11. React组件的生命周阶段是什么
-    1. 初始化渲染阶段：这个是组件从创建到挂在到DOM上的阶段
-    2. 更新阶段：组件被挂载到DOM之后，当prop或者状态发生改变时，才会引起更新和重新渲染；
-    3. 卸载阶段：这是组件声明周期的最后阶段，组件被销毁并从DOM中删除；
+    1.组件是UI视图的基础构件，整个UI视图可以看作是由多个小的组件构成的；
+    2.每个组件都相互独立并且可重用，修改某一个组件的实例属性，不会影响同一组件的其他实例；
 ###12. React组件生命周期方法
     图表：https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/
+
     React生命周期执行过程包括挂载、更新和卸载三个阶段：
-        挂载：
-            1. constructor：
-                在 React 组件挂载之前，会调用它的构造函数。
-                在为 React.Component 子类实现构造函数时，应在其他语句之前前调用 super(props)。
-                通常，在 React 中，构造函数仅用于以下两种情况：
-                    通过给 this.state 赋值对象来初始化内部 state。
-                    为事件处理函数绑定实例
-                    
-                注意：
-                    如果不初始化state或者不对方法进行绑定，则不需要为React组件实现构造函数；
-                    通常情况下，避免在构造函数中，避免直接将props的值赋值给state，这样会产生bug；
-                    （父组件更新props的对应属性时，并不会影响子组件state对应属性，考虑使用getDerivedStatefromProps）；
-            2. static getDerivedStatefromProps(props, state)：
-                静态方法 getDerivedStateFromProps 会在调用 render 方法之前调用，并且在初始挂载及后续更新时都会被调用。
-                它应返回一个对象来更新 state，如果返回 null 则不更新任何内容。
-                它适用于一种特殊的情况：即state 的值在任何时候都取决于 props；
+    1.挂载阶段（这个是组件从创建到挂在到DOM上的阶段）
+        constructor(props)：
+            在React组件挂载之前，会调用它的构造函数。
+            通常，在React中，构造函数仅用于以下两种情况：初始化内部state，绑定事件处理函数；
+
+        static getDerivedStatefromProps(props, state)：
+            该方法会在组件挂载阶段及后续更新阶段被调用；
+            它应返回一个对象来更新state，如果返回null则不更新任何内容；
+            适用场景：state的值在任何时候都取决于props；
                 
-                注意：派生状态会导致代码冗余，并使组件难以维护。
-            3. render:
-                render函数代表组件的渲染阶段；
-                应该为纯函数，这意味着在不修改组件 state 的情况下，每次调用时都返回相同的结果，并且它不会直接与浏览器交互。
-            4. componentDidMount：
-                会在组件挂载后（插入 DOM 树中）立即调用。
-                依赖于 DOM 节点的初始化应该放在这里。如需通过网络请求获取数据，以及添加订阅的地方等。
-                如果添加了订阅，请不要忘记在 componentWillUnmount() 里取消订阅。
-        更新（父组件props改变/自身调用setState/自身调用forceUpdate）：
-            1. static getDerivedStatefromProps(props, state)
-                同上；
-            2. shouldComponentUpdate(nextProps, nextState)：
-                根据 shouldComponentUpdate() 的返回值，判断 React 组件的输出是否受当前 state 或 props 更改的影响。
-                默认行为是 state 每次发生变化组件都会重新渲染。
-                
-                当 props 或 state 发生变化时，shouldComponentUpdate() 会在渲染执行之前被调用。
-                首次渲染或使用 forceUpdate() 时不会调用该方法。
-                
-                此方法仅作为性能优化的方式而存在。不要企图依靠此方法来“阻止”渲染，因为这可能会产生 bug。
-                你应该考虑使用内置的 PureComponent 组件，而不是手动编写 shouldComponentUpdate()。
-                
-                注意：
-                    返回 false 并不会阻止子组件在 state 更改时重新渲染。
-                    我们不建议在 shouldComponentUpdate() 中进行深层比较或使用 JSON.stringify()。这样非常影响效率，且会损害性能。
-            3. render()
-                同上；
-            4. getSnapShotBeforeUpdate:
-                getSnapshotBeforeUpdate() 在最近一次渲染输出（提交到 DOM 节点）之前调用。
-                它使得组件能在发生更改之前从 DOM 中捕获一些信息（例如，滚动位置）。此生命周期方法的任何返回值将作为参数传递给 componentDidUpdate()。
-                
-                此用法并不常见，但它可能出现在 UI 处理中，如需要以特殊方式处理滚动位置的聊天线程等
-            4. componentDidUpdate(prevProps, prevState, snapShot)：
-                会在组件更新后会被立即调用，可以在此处对 DOM 进行操作。
-                如果你对更新前后的 props 进行了比较，也可以选择在此处进行网络请求。
-                尽量避免在这一阶段setState，万不得已的情况下必须包裹在一个条件语句里；
-                
-                如果组件实现了 getSnapshotBeforeUpdate() 生命周期（不常用），
-                则它的返回值将作为 componentDidUpdate() 的第三个参数 “snapshot” 参数传递。否则此参数将为 undefine
+            注意：派生状态会导致代码冗余，并使组件难以维护，不建议使用；
+
+        render():
+            render函数是一个纯函数，表示将组件渲染到页面上；
+
+        componentDidMount()：
+            会在组件挂载后（插入DOM树后）立即调用；
+            可以在这一阶段通过网络请求获取数据，以及添加订阅（需要在componentWillUnmount() 里取消）等；
+
+    2.更新阶段（组件被挂载到DOM之后，当prop或者state发生改变时，或者直接调用forceUpdate()方法，会引起更新和重新渲染）：
+        static getDerivedStatefromProps(props, state)：同上；
+
+        shouldComponentUpdate(nextProps, nextState)：
+            返回一个布尔值，判断当前state或props更改的变化，是否需要出发组件更新，此方法仅作为性能优化的方式而存在。
+            注意：返回 false 并不会阻止子组件在state更改时重新渲染。
+
+        render()：同上；
+
+        getSnapShotBeforeUpdate：
+            在更新阶段执行渲染之前调用，它使得组件能在发生更改之前从DOM中捕获一些信息（例如，滚动位置）。
+            其任何返回值为snapshot的值（或 null），并且这个返回值参数传递给 componentDidUpdate()。 
+            用法并不常见，但它可能出现在 UI 处理中，如需要以特殊方式处理滚动位置的聊天线程等。
+
+        componentDidUpdate(prevProps, prevState, snapShot)：
+            会在组件更新后会被立即调用，可以在此处对DOM进行操作。
+            尽量避免在这一阶段setState，万不得已的情况下必须包裹在一个条件语句里；
+            如果组件实现了 getSnapshotBeforeUpdate() 生命周期（不常用），
             
-        卸载阶段
-            1. componentDidUnmount：
-                会在组件卸载及销毁之前直接调用，可以在此方法中执行必要的清理操作；
-                例如，清除 timer，取消网络请求或清除在 componentDidMount() 中创建的订阅等。
-###13. React refs
-###14. React refs使用场景
-    需要管理焦点、选择文本或者媒体播放时
-    触发式动画
-    与第三方DOM库集成
+    3.卸载阶段（组件被销毁）
+        componentDidUnmount：会在组件卸载及销毁之前直接调用，可以在此方法中执行必要的清理操作（清除定时器、取消订阅等）；
+
+###14. 说一下React refs
+    概念：Refs允许我们访问DOM节点、或在render方法中创建的React元素；
+
+    使用场景：
+        需要管理焦点、选择文本或者媒体播放时；
+        触发式动画；
+        与第三方DOM库集成；
+   
+    使用方式：
+        创建：React.createRef()；
+        绑定：<div ref={this.divRef}></div>；
+        访问：this.divRef.current.textContent = 'hello dogge'；
+
+    默认情况下，你不能在函数组件上使用 ref 属性，因为它们没有实例；
+    如果要引用函数组件的ref，你可以使用forwardRef转发，同时可以结合useImperativeHandle来自定义暴露给父组件的实例值；
+
+    React也支持另一种设置refs的方式，称为“回调 refs”。它能助你更精细地控制何时 refs 被设置和解除。
+
 ###30 什么是高阶组件
 ###31 高阶组件可以做什么
 ###32 React中Key的重要性
@@ -511,8 +488,12 @@
 
     2、通过 refs 获取组件实例
 
+#2.Redux相关
 
 
+
+
+#3.React Router相关
 
 
 
