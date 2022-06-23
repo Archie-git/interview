@@ -1,4 +1,3 @@
-### https://blog.csdn.net/eyeofangel/article/details/88797314
 ### https://blog.csdn.net/MichelleZhai/article/details/118423494
 ### hooks：https://blog.csdn.net/MichelleZhai/article/details/118392437
 
@@ -16,23 +15,26 @@
     3. RealDOm中如果元素更新，则会创建新的DOM，VirtualDOM中如果元素更新，则会更新JSX；
     4. RealDOM的DOM操作代价很高，VirtualDOM的DOM操作代价较低；
     5. RealDOM消耗内存多，VirtualDOM消耗内存少；
-###3. React的特点
+###2. React的特点
     高性能虚拟DOM：React通过实现虚拟DOM，并配合diff算法，最大限度地减少与真实DOM的交互，从而提升性能；
     组件化开发：通过 React 构建组件，使得代码更加容易得到复用，能够高效率的应用在大项目的开发中；
     数据驱动：所谓数据驱动就是指开发者不需要直接操作DOM，当数据发生了变化，DOM会跟着变化，而视图可以通过设置事件监听来更新数据；
     单向数据流：React中的数据是单向自顶向下传递的，数据可以从父组件传递到子组件，而子组件只能通过调用父组件的方法，来通知父组件修改自身的数据；
     JSX扩展：是一个JavaScript的语法扩展，使用JSX可以简化组件化开发的渲染逻辑，增强代码可读性；
-###4. React的主要优点
+###3. React的主要优点
     简洁：采用声明式和数据驱动的模式，无需手动操作DOM；
     灵活：使用组件化开发的模式，增强了代码的可复用性；
     高效：虚拟DOM使得页面渲染速度更快；
-###6. 为什么浏览器无法读取JSX
+###4. 为什么浏览器无法读取JSX
+    JSX是JavaScript XML的简写。是React使用的一种文件，它利用JavaScript的表现力和类似HTML的模板语法。
+    这使得 HTML 文件非常容易理解。此文件能使应用非常可靠，并能够提高其性能。下面是JSX的一个例子：
+    
     浏览器只能理解原始的Javascript语法，而不能读取常规Javascript对象中的JSX；
     所以，为了使浏览器能够理解JSX，需要先用像Babel这样的JSX转换器将JSX语法转换成原始Javascript语法；
-###7. 如何理解，在React中，一切都是组件这句话
+###5. 如何理解，在React中，一切都是组件这句话
     1.组件是UI视图的基础构件，整个UI视图可以看作是由多个小的组件构成的；
     2.每个组件都相互独立并且可重用，修改某一个组件的实例属性，不会影响同一组件的其他实例；
-###12. React组件生命周期方法
+###6. React组件生命周期方法
     图表：https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/
 
     React生命周期执行过程包括挂载、更新和卸载三个阶段：
@@ -77,58 +79,56 @@
     3.卸载阶段（组件被销毁）
         componentDidUnmount：会在组件卸载及销毁之前直接调用，可以在此方法中执行必要的清理操作（清除定时器、取消订阅等）；
 
-###14. 说一下React refs
-    概念：Refs允许我们访问DOM节点、或在render方法中创建的React元素；
+###7. 说一下React refs
+    概念：Refs允许我们访问DOM节点、或React组件实例；
 
-    使用场景：
-        需要管理焦点、选择文本或者媒体播放时；
-        触发式动画；
-        与第三方DOM库集成；
+    使用场景：需要管理焦点、选择文本或者媒体播放、触发式动画、与第三方DOM库集成；
    
     使用方式：
         创建：React.createRef()；
         绑定：<div ref={this.divRef}></div>；
         访问：this.divRef.current.textContent = 'hello dogge'；
 
-    默认情况下，你不能在函数组件上使用 ref 属性，因为它们没有实例；
-    如果要引用函数组件的ref，你可以使用forwardRef转发，同时可以结合useImperativeHandle来自定义暴露给父组件的实例值；
+    默认情况下，你不能在函数式组件上直接使用ref属性，因为它们没有实例；
+
+    如果要引用函数式组件的ref，你可以使用React.forwardRef()进行转发；
+    Ref转发是一项将ref自动地通过组件传递到其一子组件的技巧；
+    通常情况下，还需要结合useImperativeHandle来自定义暴露给父组件的实例值；
 
     React也支持另一种设置refs的方式，称为“回调 refs”。它能助你更精细地控制何时 refs 被设置和解除。
 
-###30 什么是高阶组件
-###31 高阶组件可以做什么
-###32 React中Key的重要性
-    key用于识别唯一的VirtualDOM元素以及驱动UI的相应数据，它们通过回收DOM中当前所有的元素来帮助React优化渲染。
-    这些key必须是唯一的数字或者字符串，React只是重新排序元素而不是重新渲染它们，这样可以提高应用程序的性能；
+###8 什么是高阶组件（HOC）？
+    高阶组件（HOC）是 React 中用于复用组件逻辑的一种高级技巧。
+    HOC 自身不是 React API 的一部分，它是一种基于 React 的组合特性而形成的设计模式；
+    具体而言，高阶组件是参数为组件，返回值为新组件的函数（组件是将 props 转换为 UI，而高阶组件是将组件转换为另一个组件。）。
 
-    key是React中用于追踪哪些列表中元素被修改、删除或者被添加的辅助标识。
-    在diff算法中，key用来判断该元素节点是被移动过来的还是新创建的元素，减少不必要的元素重复渲染。
-###33. MVC框架的主要问题是
-    1. 对DOM操作的代价非常高
-    2. 程序运行缓慢且效率低下
-    3. 内存浪费严重
-    4. 由于循环依赖性，组件模型需要围绕models和views进行创建；
-###34. 什么是Flux
-    Flux是一种强制单向数据流的架构模式，他控制派生数据，并使用具有所有数据权限的中心store实现多个组件之间的通信；
-    整个应用中的数据更新必须只能在此处进行，Flux为应用提供稳定性并且减少运行时候的错误；
-###35. Redux的三个原则
-    1. 单一数据源：整个应用的状态存储在单个store中的对象/状态树里，单一状态树可以更容易地更随时间的变化，并调试或者检查应用程序
-    2. 状态是只读的：改变状态的唯一方法就是去触发一个动作，动作时描述变化的普通js对象；
-    3. 使用纯函数进行修改：为了指定状态树如何通过操作进行转换，需要使用纯函数；
-###36. 你对单一事实来源有什么理解
-    Redux使用Store将程序的整个状态存储在同一个地方，因此所有组件的状态都存储在Store中，
-    并且他们从store本身接受更新，单一状态树可以更加容易地跟踪时间的变化，并调试或者检查程序；
-###39. 列出Redux的组件
-    Action： 这是一个用来描述发生了什么事情的对象
-    Reducer：这是一个确定状态将如何变化的地方
-    Store：整个程序的状态/对象树都保存在Store中
-    View：只显示Store提供的数据；
-###40. 解释Reducer的作用
-###41. Store在Redux中的意义是什么
-    Store 是一个 JavaScript 对象，它可以保存程序的状态，并提供一些方法来访问状态、调度操作和注册侦听器。
-    应用程序的整个状态/对象树保存在单一存储中。因此，Redux 非常简单且是可预测的。
-    我们可以将中间件传递到 store 来处理数据，并记录改变存储状态的各种操作。所有操作都通过 reducer 返回一个新状态。
-###42. React的diff算法工作过程
+    请注意，HOC 不会修改传入的组件，也不会使用继承来复制其行为。
+    相反，HOC 通过将组件包装在容器组件中来组成新组件。HOC 是纯函数，没有副作用。
+
+    被包装组件接收来自容器组件的所有 prop，同时也接收一个新的用于 render 的 data prop。
+    HOC 不需要关心数据的使用方式或原因，而被包装组件也不需要关心数据是怎么来的。
+    
+###9 高阶组件可以做什么？
+    1.组件代码重用： 
+        如果有多个组件都用到了同一段逻辑, 这时,就可以把共同的逻辑部分提取出来；
+        利用高阶组件的形式将这段逻辑整合到每一个组件中, 从而减少代码的逻辑重复；
+    2.组件增强优化：
+        通过高阶组件可以对原有组件中的state、props和逻辑执行增删改操作，然后再传入子组件；
+        有时第三方组件不能完全满足需求，但第三方组件不易修改；
+        此时便可以用高阶组件，在不修改原始组件的前提下，对组件添加满足实际开发需求的功能；
+
+###10 React中Key的重要性
+    key是虚拟DOM对象的标识，在更新显示时key起着极其重要的作用；
+    当状态中的数据发生改变时，react会根据新状态中的数据生成新的虚拟DOM，随后对新旧虚拟DOM进行Diff比较：
+        1.如果新旧虚拟DOM中找到了相同的key：
+            若虚拟DOM中内容没变，直接使用之前的真实DOM；
+            若虚拟DOM中内容变了，则生成新的真实DOM，随后替换掉页面中之前的真实DOM；
+        2.如果新旧虚拟DOM中未找到相同的key：
+            则根据数据创建的新的真实DOM，随后渲染到页面；
+
+    所以使用key可以提高diff比较的效率，避免不必要的比较（如状态中数组顺序发生改变时）；
+###11. React的diff算法工作过程
+    todo.archie
     传统的diff算法通过循环递归遍历节点进行对比，其复杂度要达到O(n^3)，其中n是节点总数，效率十分低下；
     tree diff：
         对树的每一层遍历，如果组件不存在了则会直接销毁；
@@ -137,14 +137,22 @@
         2. 不同类型的组件：直接替换；
     element diff：
         同一类型组件里：继续比较下去
-###43. React中的setState是同步还是异步
-    setState本身不是异步的，在React的生命周期函数或者作用域下是异步，在原生的环境下是同步的；
-###44. setState为什么在React生命周期中是异步的
-    1. Reacg框架本身的性能机制所导致的，因为每次调用setState都会触发更新，异步操作是为了提高性能，
-        将多个状态合并到一起更新，减少re-render调用；
-    2. React会将多个setState的调用合并为一个来执行，也就是说，当执行setState的时候，state中的数据并不会立即更新；
-    参考： https://www.cnblogs.com/makai/p/14238200.html
-###45. React服务端渲染
+###13. setState为什么在React生命周期中是异步的
+    setState本身不是异步的，但是由于React本身的性能机制，会将多次状态的改变合并到一起更新，以减少重复渲染的次数；
+    由于React会将多个setState的调用合并为一个来执行，因此在生命周期函数中调用setState不会立即执行，所以就表现为类似异步的现象；
+    可以为setState添加回调函数，以此来获取更新后的状态；
+###15. 受控组件和非受控组件
+    受控组件：
+        在HTML中，表单元素（如<input>、 <textarea> 和 <select>）通常由自己维护自身的state，并根据用户输入进行更新。
+        而在React中，可变状态（mutable state）通常保存在组件的state属性中，并且只能通过使用setState()来更新。
+        我们可以把两者结合起来，使React的state成为“唯一数据源”。渲染表单的React组件还控制着用户输入过程中表单发生的操作。
+        被React以这种方式控制取值的表单输入元素就叫做“受控组件”。
+        在一个受控组件中，表单数据是由React组件来管理的；
+    非受控组件：
+        有时使用受控组件会很麻烦，因为你需要为数据变化的每种方式都编写事件处理函数，并通过一个React组件传递所有的输入state。
+        另一种替代方案是使用非受控组件，这时表单数据将交由DOM节点来处理。
+        要编写一个非受控组件，而不是为每个状态更新都编写数据处理函数，可以使用ref来从DOM节点中获取表单数据。
+###14. React服务端渲染
     目的：
         为了减少首屏加载等待时间；
         有利于SEO
@@ -166,8 +174,21 @@
     其他解决方案：
         如果对首屏加载时间和SEO没有极致的追求，我们可以选择更轻便的方案，如利用webpack和react-router分割代码，减少首屏加载时间；
         利用prerender进行预渲染，优化项目搜索引擎排名，不一定需要对整个项目采用同构的发给你是否i进行服务端渲染；
+###16. 什么是纯组件（PureComponent）
+    React.PureComponent与React.Component 很相似；
+    两者的区别在于React.Component并未实现shouldComponentUpdate()，每次默认return true；
+    而React.PureComponent中以浅层对比prop和state的方式来实现了该函数；
 
-###46. React同构
+    如果赋予React组件相同的props和state，render() 函数会渲染相同的内容；
+    那么在某些情况下使用 React.PureComponent 可提高性能；
+
+    仅在你的props和state较为简单时，才使用React.PureComponent，
+    或者在深层数据结构发生变化时调用 forceUpdate() 来确保组件被正确地更新；
+    你也可以考虑使用 immutable 对象加速嵌套数据的比较；
+
+    React.PureComponent中的shouldComponentUpdate()将跳过所有子组件树的prop更新；
+    因此，请确保所有子组件也都是“纯”的组件；
+###15. React同构
     https://blog.csdn.net/MichelleZhai/article/details/118423494
 
 ###47. react-router history和hash的区别和比较
@@ -490,6 +511,54 @@
 
 #2.Redux相关
 
+###11. Redux常见Api
+    顶级方法：
+        createStore：创建一个Redux store以存放应用中所有的state。
+        combineReducers：随着应用变得越来越复杂，可以考虑拆分为多个reducer，拆分后的每个函数负责独立管理state的一部分。
+        applyMiddleware：使用包含自定义功能的 middleware 来扩展 Redux 是一种推荐的方式。
+        bindActionCreators：
+        compose：
+    Store Api：
+        getState：返回应用当前的state树。
+        dispatch：分发 action。这是触发 state 变化的惟一途径。
+        subscribe：添加一个变化监听器，如果需要解绑这个变化监听器，执行 subscribe 返回的函数即可。
+        replaceReducer：替换 store 当前用来计算 state 的 reducer。
+###12. React-Redux常见Api
+    Provider：Provicer用于向组件树中注入Store，此后可以在深层次组件中通过Hooks或connect Api获取注入的全局状态；
+    Hooks：
+        useSelector：获取全局状态中的部分状态数据；
+        useDispath：将会返回一个dispatch方法，用来分发action事件；
+        useStore：返回注入在上层组件中的store实例；
+    connect(mapStateToProps, mapDispatchToProps， mergeProps， options)：
+        mapStateToProps：提取全局状态中的部分状态并映射到组件props中；
+        mapDispatchToProps：提取部分action方法并映射到组件props中；
+        mergeProps：...；
+        options：可以定制 connector 的行为；
+###12. 什么是Flux
+    Flux的核心思想就是数据和逻辑永远单向流动。
+    
+    Flux应用由三大部分组成dispatcher、store和view，其中：
+        1.dispatcher负责分发事件；
+        2.store负责保存数据，同时响应事件并更新数据；
+        3.view负责订阅store中的数据，并使用这些数据渲染相应的页面；
+
+###35. Redux的三个原则
+    1. 单一数据源：整个应用的状态存储在单个store中的对象/状态树里，单一状态树可以更容易地更随时间的变化，并调试或者检查应用程序
+    2. 状态是只读的：改变状态的唯一方法就是去触发一个动作，动作时描述变化的普通js对象；
+    3. 使用纯函数进行修改：为了指定状态树如何通过操作进行转换，需要使用纯函数；
+###36. 你对单一事实来源有什么理解
+    Redux使用Store将程序的整个状态存储在同一个地方，因此所有组件的状态都存储在Store中，
+    并且他们从store本身接受更新，单一状态树可以更加容易地跟踪时间的变化，并调试或者检查程序；
+###39. 列出Redux的组件
+    Action： 这是一个用来描述发生了什么事情的对象
+    Reducer：这是一个确定状态将如何变化的地方
+    Store：整个程序的状态/对象树都保存在Store中
+    View：只显示Store提供的数据；
+###40. 解释Reducer的作用
+###41. Store在Redux中的意义是什么
+    Store 是一个 JavaScript 对象，它可以保存程序的状态，并提供一些方法来访问状态、调度操作和注册侦听器。
+    应用程序的整个状态/对象树保存在单一存储中。因此，Redux 非常简单且是可预测的。
+    我们可以将中间件传递到 store 来处理数据，并记录改变存储状态的各种操作。所有操作都通过 reducer 返回一个新状态。
 
 
 
